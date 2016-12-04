@@ -13,10 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -31,12 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * Created by Ferran on 02/12/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity {
     TextView mTxtViewBuscaHeroe;
     EditText mEdtTextNombreBuscar;
 
@@ -62,13 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTxtViewBuscaHeroe = (TextView)this.findViewById(R.id.txt_view_buscar);
-        mEdtTextNombreBuscar = (EditText)this.findViewById(R.id.edt_text_buscar);
-        Button mSearchBtn = (Button)this.findViewById(R.id.srch_btn);
-
-        mSearchBtn.setOnClickListener(this);
-
-
+        mTxtViewBuscaHeroe = (TextView) this.findViewById(R.id.txt_view_buscar);
+        mEdtTextNombreBuscar = (EditText) this.findViewById(R.id.edt_text_buscar);
 
         mEdtTextNombreBuscar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,7 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                if (charSequence.length() > 2) {
+                    switchActivity();
+                }
             }
 
             @Override
@@ -95,43 +90,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 LinearLayoutManager.VERTICAL,
                 false)); //para que sea circular o no (false = no)
 
-        MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(this,listItem);
+        MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(this, listItem,true);
 
         recyclerView.setAdapter(myListAdapterRecycler);
 
-        recyclerView.setOnClickListener(this);
 
     }
 
 
-    @Override
-    public void onClick(View view) {
+    private void switchActivity() {
 
-        if(view.getId()==R.id.srch_btn) {
-            ConnectivityManager mConnectionManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mNetworkInfo = mConnectionManager.getActiveNetworkInfo();
+        Toast.makeText(this,"Searching...",Toast.LENGTH_LONG).show();
+        ConnectivityManager mConnectionManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mNetworkInfo = mConnectionManager.getActiveNetworkInfo();
 
-            if (mNetworkInfo != null && mNetworkInfo.isConnected()) {
-                if (view.getId() == R.id.srch_btn) {
+        if (mNetworkInfo != null && mNetworkInfo.isConnected()) {
+            this.mHeroName = mEdtTextNombreBuscar.getText().toString();
+            new MyAlternativeThread().execute(marvelStrURL = mApiConfig.ComputeRequestMarvelURL(this.mHeroName));
 
-                    this.mHeroName = mEdtTextNombreBuscar.getText().toString();
-                    new MyAlternativeThread().execute(marvelStrURL = mApiConfig.ComputeRequestMarvelURL(this.mHeroName));
-
-                }
-
-            } else {
-                Log.i("TAG", "Connection unavailable");
-            }
-        }
-        else{
-            //Toast.makeText(this,"Clicked ",Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i("TAG", "Connection unavailable");
         }
     }
 
 
     public class MyAlternativeThread extends AsyncTask<String, Void, String> {
 
-        private String mHeroName="Spider-Man";
+        private String mHeroName = "Spider-Man";
 
         private String marvelStrURL;
 
@@ -140,94 +125,93 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... strings) {
 
-            Log.i("TAG","1: The requested URL is: "+strings[0] );
+            Log.i("TAG", "1: The requested URL is: " + strings[0]);
 
-                try {
+            try {
 
-                    URL myUrl = new URL(strings[0]);
-                    HttpURLConnection myConnection = (HttpURLConnection)myUrl.openConnection();
-                    myConnection.setRequestMethod("GET");
-                    myConnection.setDoInput(true);
+                URL myUrl = new URL(strings[0]);
+                HttpURLConnection myConnection = (HttpURLConnection) myUrl.openConnection();
+                myConnection.setRequestMethod("GET");
+                myConnection.setDoInput(true);
 
-                    myConnection.connect();
-                    int respCode = myConnection.getResponseCode();
-                    Log.i("TAG","The response is: "+respCode );
+                myConnection.connect();
+                int respCode = myConnection.getResponseCode();
+                Log.i("TAG", "The response is: " + respCode);
 
-                    if(respCode == HttpURLConnection.HTTP_OK){
-
-
-                        InputStream myInStream = myConnection.getInputStream();
-                        Reader reader = null;
-                        reader = new InputStreamReader(myInStream,"UTF-8");
-                        //myInStream.close();
-
-                        //reader=null;
-                        char[] buffer = new char[100000];
-                        reader.read(buffer);
+                if (respCode == HttpURLConnection.HTTP_OK) {
 
 
-                        Log.i("TAG","The connection was: " + myConnection.getResponseMessage());
-                        Log.i("TAG","Received: " + new String(buffer));
+                    InputStream myInStream = myConnection.getInputStream();
+                    Reader reader = null;
+                    reader = new InputStreamReader(myInStream, "UTF-8");
+                    //myInStream.close();
+
+                    //reader=null;
+                    char[] buffer = new char[100000];
+                    reader.read(buffer);
 
 
-                        String jsonString = new String(buffer);
-
-                        List<String> heroArray = new ArrayList<String>();
-
-                        Character hero = new Character(jsonString);
-
-                        hero.computeCharacterObject();
-
-                        String des = hero.getDescription();
-
-                        Log.i("TAG",des);
-
-                        String name = hero.getName();
-                        Log.i("TAG",name);
-
-                        Log.i("TAG","The array of the characters is: "+ String.valueOf(hero.getCharacterArray()));
-
-                        listCharacter.clear();
-                        listItem.clear();
-                        listCharacter.add(hero);
-                        selectedChar=listCharacter.get(0);
-                        imgBitmapList.clear();
-
-                        int cnt = 0;
-
-                        for(String counter : listCharacter.get(0).getImageArray()) {
-                            myUrl = new URL(listCharacter.get(0).getImageArray().get(cnt));
-                            Log.i("TAG", "Image URL: " + myUrl);
-                            myConnection = (HttpURLConnection) myUrl.openConnection();
-                            myConnection.setRequestMethod("GET");
-                            myConnection.setDoInput(true);
-
-                            myConnection.connect();
-                            respCode = myConnection.getResponseCode();
-                            Log.i("TAG", "The response is: " + respCode);
-
-                            if (respCode == HttpURLConnection.HTTP_OK) {
-                                myInStream = myConnection.getInputStream();
-                                //imageBitmap = BitmapFactory.decodeStream(myInStream);
-                                imgBitmapList.add( BitmapFactory.decodeStream(myInStream));
-                                myInStream.close();
-
-                            } else
-                                Log.i("TAG", "Connection not available");
-                            cnt++;
-                        }
+                    Log.i("TAG", "The connection was: " + myConnection.getResponseMessage());
+                    Log.i("TAG", "Received: " + new String(buffer));
 
 
+                    String jsonString = new String(buffer);
 
+                    List<String> heroArray = new ArrayList<String>();
+
+                    Character hero = new Character(jsonString);
+
+                    hero.computeCharacterObject();
+
+                    String des = hero.getDescription();
+
+                    Log.i("TAG", des);
+
+                    String name = hero.getName();
+                    Log.i("TAG", name);
+
+                    Log.i("TAG", "The array of the characters is: " + String.valueOf(hero.getCharacterArray()));
+
+                    listCharacter.clear();
+                    listItem.clear();
+                    listCharacter.add(hero);
+                    selectedChar = listCharacter.get(0);
+                    imgBitmapList.clear();
+
+                    int cnt = 0;
+
+                    for (String counter : listCharacter.get(0).getImageArray()) {
+                        myUrl = new URL(listCharacter.get(0).getImageArray().get(cnt));
+                        Log.i("TAG", "Image URL: " + myUrl);
+                        myConnection = (HttpURLConnection) myUrl.openConnection();
+                        myConnection.setRequestMethod("GET");
+                        myConnection.setDoInput(true);
+
+                        myConnection.connect();
+                        respCode = myConnection.getResponseCode();
+                        Log.i("TAG", "The response is: " + respCode);
+
+                        if (respCode == HttpURLConnection.HTTP_OK) {
+                            myInStream = myConnection.getInputStream();
+                            //imageBitmap = BitmapFactory.decodeStream(myInStream);
+                            imgBitmapList.add(BitmapFactory.decodeStream(myInStream));
+                            myInStream.close();
+
+                        } else
+                            Log.i("TAG", "Connection not available");
+                        cnt++;
                     }
 
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
                 }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -237,22 +221,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             List<Item> newItemList = new ArrayList<>();
 
-            for (Character b:listCharacter){
-                int i=0;
-                for(String names : b.getCharacterArray()){
+            for (Character b : listCharacter) {
+                int i = 0;
+                for (String names : b.getCharacterArray()) {
 
                     String heroDescription;
-                    if(b.getDescriptionArray().get(i)!=null) {
-                        heroDescription=b.getDescriptionArray().get(i);
-                    }
-                    else
-                       heroDescription="";
-                    Item hero = new Item(imgBitmapList.get(i), b.getCharacterArray().get(i),heroDescription );
+                    if (b.getDescriptionArray().get(i) != null) {
+                        heroDescription = b.getDescriptionArray().get(i);
+                    } else
+                        heroDescription = "";
+                    Item hero = new Item(imgBitmapList.get(i), b.getCharacterArray().get(i), heroDescription);
                     i++;
                     newItemList.add(hero);
                 }
             }
-            MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(getApplicationContext(),newItemList,selectedChar);
+            MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(getApplicationContext(), newItemList, selectedChar,true);
             recyclerView.setAdapter(myListAdapterRecycler);
         }
 

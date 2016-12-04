@@ -1,4 +1,5 @@
 package com.example.ferran.marvelcharacters;
+
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,6 +14,8 @@ import java.util.List;
  */
 
 public class Character {
+
+    //Declare object constants
     private static final String CHARACTER_DATA = "data";
     private static final String CHARACTER_RESULTS = "results";
     private static final String CHARACTER_NAME = "name";
@@ -31,17 +34,15 @@ public class Character {
     private static final String NAME_DETAIL = "detail";
     private static final String NAME_COMIC = "comiclink";
 
+    //Declare object variables
     private int total_comics;
-    private String jsonStringObject,name,description;
+    private String jsonStringObject, name, description;
 
     private List<String> comicArray = new ArrayList<String>();
     private List<String> characterArray = new ArrayList<String>();
     private List<String> descriptionArray = new ArrayList<String>();
     private List<String> imageArray = new ArrayList<String>();
     private List<String> idArray = new ArrayList<String>();
-
-
-
 
     List<String> urlLinksList = new ArrayList<>();
     List<String> urlTypesList = new ArrayList<>();
@@ -50,11 +51,14 @@ public class Character {
     List<String> comicList = new ArrayList<>();
 
 
-    public Character(String jsonString){
+    public Character(String jsonString) {
         this.jsonStringObject = jsonString;
     }
-    public Character(){}
 
+    public Character() {
+    }
+
+    //This function extracts JSON data and stores on object's fields
     public void computeCharacterObject() throws JSONException {
         JSONObject jsonReader = (JSONObject) new JSONObject(this.jsonStringObject);
         JSONObject jsonReaderData = jsonReader.getJSONObject(CHARACTER_DATA);
@@ -79,8 +83,8 @@ public class Character {
             this.comicArray.add(charComics);
             String charDescription = returnedData.getString(CHARACTER_DESCRIPTION);
             this.descriptionArray.add(charDescription);
-            this. imageArray.add(returnedData.getJSONObject(CHARACTER_IMAGE).getString(IMAGE_PATH)
-                    +"."
+            this.imageArray.add(returnedData.getJSONObject(CHARACTER_IMAGE).getString(IMAGE_PATH)
+                    + "/portrait_medium."
                     .concat(returnedData.getJSONObject(CHARACTER_IMAGE).getString(IMAGE_EXTENSION)));
             String charId = returnedData.getString(CHARACTER_ID);
             this.idArray.add(charId);
@@ -89,80 +93,96 @@ public class Character {
             urlLinksList.clear();
             JSONArray urlArray = returnedData.getJSONArray(URLS);
 
-            for(int x=0;x< urlArray.length();x++){
+            for (int x = 0; x < urlArray.length(); x++) {
                 String urlTypes = urlArray.getJSONObject(x).getString(URL_TYPE);
                 urlTypesList.add(urlTypes);
                 String urlLinks = urlArray.getJSONObject(x).getString(URL_LINK);
                 urlLinksList.add(urlLinks);
             }
 
-            if(urlLinksList.size()<2){
+            if (urlLinksList.size() < 2) {
                 urlLinksList.add("");
             }
-            if(urlLinksList.size()<3){
+            if (urlLinksList.size() < 3) {
                 urlLinksList.add("");
             }
-            int cnt=0;
+            int cnt = 0;
             boolean isWikiSet = false;
             boolean isDetailSet = false;
             boolean isComicSet = false;
 
-            for(String p:urlTypesList){
-                switch (p){
+            for (String p : urlTypesList) {
+                switch (p) {
                     case NAME_WIKI:
                         wikiList.add(urlLinksList.get(cnt));
-                        isWikiSet=true;
+                        isWikiSet = true;
                         break;
                     case NAME_DETAIL:
                         detailList.add(urlLinksList.get(cnt));
-                        isDetailSet=true;
+                        isDetailSet = true;
                         break;
                     case NAME_COMIC:
                         comicList.add(urlLinksList.get(cnt));
-                        isComicSet=true;
+                        isComicSet = true;
                         break;
                     default:
-                        if(!isWikiSet){wikiList.add("");}
-                        if(!isDetailSet){detailList.add("");}
-                        if(!isComicSet){comicList.add("");}
+
                         break;
                 }
                 cnt++;
             }
 
+            if (!isWikiSet) {
+                wikiList.add("Non available");
+            }
+            if (!isDetailSet) {
+                detailList.add("Non available");
+            }
+            if (!isComicSet) {
+                comicList.add("Non available");
+            }
+            Log.i("TAG", "URL TYPES: " + String.valueOf(urlTypesList));
+            Log.i("TAG", "WIKI LIST SIZE: " + String.valueOf(wikiList.size()));
         }
     }
 
+
+    //Getters
     public String getDescription() {
         return this.description;
     }
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
 
-    public List<String> getCharacterArray(){
+    public List<String> getCharacterArray() {
         return this.characterArray;
     }
-    public List<String> getDescriptionArray(){
+
+    public List<String> getDescriptionArray() {
         return this.descriptionArray;
     }
-    public List<String> getImageArray(){
+
+    public List<String> getImageArray() {
         return this.imageArray;
     }
-    public List<String> getIdArray(){
+
+    public List<String> getIdArray() {
         return this.idArray;
     }
 
     public List<String> getWikiList() {
         return wikiList;
     }
+
     public List<String> getDetailList() {
         return detailList;
     }
+
     public List<String> getComicList() {
         return comicList;
     }
-
 
 
 }

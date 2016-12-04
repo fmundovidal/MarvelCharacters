@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,18 +47,21 @@ public class MyListAdapterRecycler extends RecyclerView.Adapter<MyListAdapterRec
     Context mContext;
     List<Item> mitemList;
     Character mHero;
+    boolean mIsActivityMain;
 
     public int mPosition;
 
-    public  MyListAdapterRecycler(Context context, List<Item> listItem, Character hero){
+    public  MyListAdapterRecycler(Context context, List<Item> listItem, Character hero,boolean isActivityMain){
         this.mContext = context;
         this.mitemList = listItem;
         this.mHero = hero;
+        this.mIsActivityMain = isActivityMain;
     }
 
-    public  MyListAdapterRecycler(Context context, List<Item> listItem){
+    public  MyListAdapterRecycler(Context context, List<Item> listItem,boolean isActivityMain){
         this.mContext = context;
         this.mitemList = listItem;
+        this.mIsActivityMain=isActivityMain;
     }
 
 
@@ -105,21 +109,23 @@ public class MyListAdapterRecycler extends RecyclerView.Adapter<MyListAdapterRec
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,"Accessing to "+String.valueOf(mHero.getCharacterArray().get(position)) ,Toast.LENGTH_SHORT).show();
-                //Log.i("TAG","selectedChar: "+mHero.getCharacterArray().get(position));
+                if(mIsActivityMain) {
+                    Toast.makeText(mContext, "Accessing to " + String.valueOf(mHero.getCharacterArray().get(position)), Toast.LENGTH_SHORT).show();
+                    //Log.i("TAG","selectedChar: "+mHero.getCharacterArray().get(position));
 
-                Intent intentCharInfo = new Intent(mContext,SecondActivity.class);
-                intentCharInfo.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                intentCharInfo.putExtra("CHAR_ID",mHero.getIdArray().get(position));
-                intentCharInfo.putExtra("CHAR_NAME",mHero.getCharacterArray().get(position));
-                intentCharInfo.putExtra("CHAR_DESCRIPTION",mHero.getDescriptionArray().get(position));
-                //intentCharInfo.putExtra("CHAR_IMAGE",mHero.getBitmapArray().get(position));
-                intentCharInfo.putExtra("CHAR_IMAGE",mHero.getImageArray().get(position));
-                intentCharInfo.putExtra("CHAR_WIKI_URL",mHero.getWikiList().get(position));
-                intentCharInfo.putExtra("CHAR_DETAIL_URL",mHero.getDetailList().get(position));
-                intentCharInfo.putExtra("CHAR_COMIC_URL",mHero.getComicList().get(position));
+                    Intent intentCharInfo = new Intent(mContext, SecondActivity.class);
+                    intentCharInfo.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                    intentCharInfo.putExtra("CHAR_ID", mHero.getIdArray().get(position));
+                    intentCharInfo.putExtra("CHAR_NAME", mHero.getCharacterArray().get(position));
+                    intentCharInfo.putExtra("CHAR_DESCRIPTION", mHero.getDescriptionArray().get(position));
+                    //intentCharInfo.putExtra("CHAR_IMAGE",mHero.getBitmapArray().get(position));
+                    intentCharInfo.putExtra("CHAR_IMAGE", mHero.getImageArray().get(position));
+                    intentCharInfo.putExtra("CHAR_WIKI_URL", mHero.getWikiList().get(position));
+                    intentCharInfo.putExtra("CHAR_DETAIL_URL", mHero.getDetailList().get(position));
+                    intentCharInfo.putExtra("CHAR_COMIC_URL", mHero.getComicList().get(position));
 
-                mContext.startActivity(intentCharInfo);
+                    mContext.startActivity(intentCharInfo);
+                }
             }
 
         });

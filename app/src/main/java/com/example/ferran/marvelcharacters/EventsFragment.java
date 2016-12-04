@@ -1,37 +1,35 @@
 package com.example.ferran.marvelcharacters;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+        import android.content.Context;
+        import android.os.Bundle;
+        import android.support.annotation.Nullable;
+        import android.support.v4.app.Fragment;
+        import android.support.v7.widget.LinearLayoutManager;
+        import android.support.v7.widget.RecyclerView;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+        import java.util.ArrayList;
+        import java.util.List;
 
-public class ComicsFragment extends Fragment {
+public class EventsFragment extends Fragment {
 
-    Comics mMyComics = new Comics();
+    Events mMyEvents = new Events();
     List<Item> mListItem = new ArrayList<>();
     RecyclerView recyclerView;
 
     View mContextView;
 
-    public interface OnComicsFragmentInterface {
-        Comics setComicList();
+    public interface OnEventsFragmentInterface {
+        Events setEventList();
     }
 
-    private OnComicsFragmentInterface mComicsFragCallback;
+    private OnEventsFragmentInterface mEventsFragCallback;
 
-    public ComicsFragment() {
+    public EventsFragment() {
         // Required empty public constructor
     }
 
@@ -41,7 +39,7 @@ public class ComicsFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            this.mComicsFragCallback = (OnComicsFragmentInterface) context;
+            this.mEventsFragCallback = (OnEventsFragmentInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(this.getActivity().toString() + " must implement Interface");
         }
@@ -50,9 +48,8 @@ public class ComicsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragView = inflater.inflate(R.layout.fragment_comics, container, false);
-        recyclerView = (RecyclerView) fragView.findViewById(R.id.recycler_view_comics);
-
+        View fragView = inflater.inflate(R.layout.fragment_events, container, false);
+        recyclerView = (RecyclerView) fragView.findViewById(R.id.recycler_view_events);
         mContextView=fragView;
 
 
@@ -70,8 +67,8 @@ public class ComicsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mMyComics = mComicsFragCallback.setComicList();
-        Log.i("TAG", "mMyComics titles: " + mMyComics.getComicArray());
+        mMyEvents = mEventsFragCallback.setEventList();
+        Log.i("TAG", "mMyEvents titles: " + mMyEvents.getEventArray());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager( //cambiando el elemento permite definir si es linear layout, un grid, un staggeredgridlayout, etc...
@@ -82,11 +79,11 @@ public class ComicsFragment extends Fragment {
         List<Item> newItemList = new ArrayList<>();
         int i = 0;
 
-        Log.i("TAG","ComicArray Size"+String.valueOf(mMyComics.getComicArray().size()));
-        Log.i("TAG","ImageBitmapArray Size"+String.valueOf(mMyComics.getImageBitmapArray().size()));
-        Log.i("TAG","getDescriptionArray Size"+String.valueOf(mMyComics.getDescriptionArray().size()));
-        for (String names : mMyComics.getComicArray()) {
-            Item hero = new Item(mMyComics.getImageBitmapArray().get(i), mMyComics.getComicArray().get(i), mMyComics.getDescriptionArray().get(i));
+        Log.i("TAG","EventArray Size"+String.valueOf(mMyEvents.getEventArray().size()));
+        Log.i("TAG","ImageBitmapArray Size"+String.valueOf(mMyEvents.getImageBitmapArray().size()));
+        Log.i("TAG","getDescriptionArray Size"+String.valueOf(mMyEvents.getDescriptionArray().size()));
+        for (String names : mMyEvents.getEventArray()) {
+            Item hero = new Item(mMyEvents.getImageBitmapArray().get(i), mMyEvents.getEventArray().get(i), mMyEvents.getDescriptionArray().get(i));
             i++;
             newItemList.add(hero);
         }
