@@ -9,6 +9,7 @@ import android.view.Menu;
 public class SplashScreen extends AppCompatActivity {
 
     private static final long SPLASH_LOADING_TIME = 2000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,10 +20,10 @@ public class SplashScreen extends AppCompatActivity {
         hndl.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SplashScreen.this.startActivity(new Intent(SplashScreen.this,MainActivity.class));
+                SplashScreen.this.startActivity(new Intent(SplashScreen.this, MainActivity.class));
                 SplashScreen.this.finish();
             }
-        },SPLASH_LOADING_TIME);
+        }, SPLASH_LOADING_TIME);
 
     }
 }

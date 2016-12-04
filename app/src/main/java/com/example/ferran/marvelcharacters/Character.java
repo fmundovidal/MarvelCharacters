@@ -1,7 +1,5 @@
 package com.example.ferran.marvelcharacters;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +9,9 @@ import java.util.List;
 
 /**
  * Created by Ferran on 03/12/2016.
+ *
+ * That class is used to store hero data, it contains it's fields such as Name, Description
+ * Image and other stuff. Used on first activity.
  */
 
 public class Character {
@@ -19,6 +20,7 @@ public class Character {
     private static final String CHARACTER_DATA = "data";
     private static final String CHARACTER_RESULTS = "results";
     private static final String CHARACTER_NAME = "name";
+    private static final String CHARACTER_TOTAL = "total";
     private static final String CHARACTER_TOTAL_NAMES = "count";
     private static final String CHARACTER_COMICS = "comics";
     private static final String CHARACTER_TOTAL_COMICS = "returned";
@@ -63,10 +65,8 @@ public class Character {
         JSONObject jsonReader = (JSONObject) new JSONObject(this.jsonStringObject);
         JSONObject jsonReaderData = jsonReader.getJSONObject(CHARACTER_DATA);
         JSONArray characterResults = jsonReaderData.getJSONArray(CHARACTER_RESULTS);
-        Log.i("TAG", "Comics length: " + String.valueOf(total_comics));
-        Log.i("TAG", "results: " + characterResults.toString());
+
         int characterCount = (int) jsonReaderData.get(CHARACTER_TOTAL_NAMES);
-        Log.i("TAG", "count: " + String.valueOf(characterCount));
         JSONObject returnedData = characterResults.getJSONObject(0);
 
         returnedData = characterResults.getJSONObject(0);
@@ -75,7 +75,7 @@ public class Character {
         this.total_comics = (int) returnedData.getJSONObject(CHARACTER_COMICS).get(CHARACTER_TOTAL_COMICS);
 
         //Each character individual
-        for (int i = 0; i < characterResults.length(); i++) {
+        for (int i = 0; i < characterResults.length()/*characterCount*/; i++) {
             returnedData = characterResults.getJSONObject(i);
             String charName = returnedData.getString(CHARACTER_NAME);
             this.characterArray.add(charName);
@@ -99,18 +99,16 @@ public class Character {
                 String urlLinks = urlArray.getJSONObject(x).getString(URL_LINK);
                 urlLinksList.add(urlLinks);
             }
+            //If the character is missing an url, just add a blank field, to avoid nullPointerExceptions
+            if (urlLinksList.size() < 2) {urlLinksList.add("");}
+            if (urlLinksList.size() < 3) {urlLinksList.add("");}
 
-            if (urlLinksList.size() < 2) {
-                urlLinksList.add("");
-            }
-            if (urlLinksList.size() < 3) {
-                urlLinksList.add("");
-            }
-            int cnt = 0;
+
             boolean isWikiSet = false;
             boolean isDetailSet = false;
             boolean isComicSet = false;
 
+            int cnt = 0;
             for (String p : urlTypesList) {
                 switch (p) {
                     case NAME_WIKI:
@@ -131,18 +129,9 @@ public class Character {
                 }
                 cnt++;
             }
-
-            if (!isWikiSet) {
-                wikiList.add("Non available");
-            }
-            if (!isDetailSet) {
-                detailList.add("Non available");
-            }
-            if (!isComicSet) {
-                comicList.add("Non available");
-            }
-            Log.i("TAG", "URL TYPES: " + String.valueOf(urlTypesList));
-            Log.i("TAG", "WIKI LIST SIZE: " + String.valueOf(wikiList.size()));
+            if (!isWikiSet) {wikiList.add("Non available");}
+            if (!isDetailSet) {detailList.add("Non available");}
+            if (!isComicSet) {comicList.add("Non available");}
         }
     }
 

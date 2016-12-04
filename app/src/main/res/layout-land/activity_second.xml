@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:id="@+id/heroe_image"
+            android:src="@mipmap/ic_launcher"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/txt_view_title_text"
+                android:id="@+id/heroe_title"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/txt_view_body_text"
+                android:id="@+id/heroe_body"
+                android:layout_marginLeft="10dp"
+                android:scrollbars="vertical"
+                android:lines="5"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/links_txt"
+        android:textColor="@android:color/black"
+        android:padding="@dimen/activity_horizontal_margin"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/detalle_btn_txt"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:id="@+id/detalle_btn"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/wiki_btn_txt"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:id="@+id/wiki_btn"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/comics_btn_txt"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:id="@+id/comics_btn"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recursos_txt"
+        android:textColor="@android:color/black"
+        android:padding="@dimen/activity_horizontal_margin"/>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/toolbar_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.design.widget.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tabs">
+
+        </android.support.design.widget.TabLayout>
+
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/frame_layout_comics_events"/>
+
+
+</LinearLayout>

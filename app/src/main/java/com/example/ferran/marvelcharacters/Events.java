@@ -1,7 +1,6 @@
 package com.example.ferran.marvelcharacters;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +22,6 @@ public class Events {
     private static final String EVENT_IMAGE = "thumbnail";
     private static final String EVENT_ID = "id";
     private static final String EVENT_TITLE = "title";
-
     private static final String IMAGE_PATH = "path";
     private static final String IMAGE_EXTENSION = "extension";
 
@@ -33,11 +31,8 @@ public class Events {
     private List<String> eventArray = new ArrayList<String>();
     private List<String> descriptionArray = new ArrayList<String>();
     private List<String> imageUrlArray = new ArrayList<String>();
-
-
     private List<Bitmap> imageBitmapArray = new ArrayList<Bitmap>();
     private List<String> idArray = new ArrayList<String>();
-
 
     public Events(String jsonString) {
         this.jsonStringObject = jsonString;
@@ -48,7 +43,6 @@ public class Events {
 
     public void computeCharacterEventInfo() throws JSONException {
 
-        Log.i("TAG","Inside computeCharacterEventInfo, json string is: "+this.jsonStringObject.toString());
         JSONObject jsonReader = (JSONObject) new JSONObject(this.jsonStringObject);
         JSONObject jsonReaderData = jsonReader.getJSONObject(EVENT_DATA);
         JSONArray characterResults = jsonReaderData.getJSONArray(EVENT_RESULTS);
@@ -56,7 +50,7 @@ public class Events {
         if (eventCount > 0) {
             JSONObject returnedData = characterResults.getJSONObject(0);
 
-            for (int i = 0; i < (int)jsonReaderData.get(EVENT_TOTAL_NAMES)/*characterResults.length()*/; i++) {
+            for (int i = 0; i < (int) jsonReaderData.get(EVENT_TOTAL_NAMES)/*characterResults.length()*/; i++) {
                 returnedData = characterResults.getJSONObject(i);
                 String eventName = returnedData.getString(EVENT_TITLE);
                 this.eventArray.add(eventName);

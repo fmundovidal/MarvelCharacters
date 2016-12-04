@@ -1,8 +1,6 @@
 package com.example.ferran.marvelcharacters;
 
 import android.graphics.Bitmap;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +10,9 @@ import java.util.List;
 
 /**
  * Created by Ferran on 03/12/2016.
+ *
+ * This class is used to store a hero's comic, used on the second activity
+ *
  */
 
 public class Comics {
@@ -46,7 +47,7 @@ public class Comics {
     public Comics() {
     }
 
-
+    //This function extracts JSON data and stores them into object fields.
     public void computeCharacterComicInfo() throws JSONException {
 
         JSONObject jsonReader = (JSONObject) new JSONObject(this.jsonStringObject);

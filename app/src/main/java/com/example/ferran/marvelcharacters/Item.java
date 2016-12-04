@@ -14,19 +14,22 @@ public class Item {
     private String mBody;
     private Bitmap mImage;
 
-    Item(Bitmap imgRef, String aTitle, String aBody){
+    Item(Bitmap imgRef, String aTitle, String aBody) {
         this.mTitle = aTitle;
         this.mBody = aBody;
         this.mImage = imgRef;
     }
-    public String getmTitle(){
+
+    public String getmTitle() {
         return this.mTitle;
     }
-    public String getmBody(){
+
+    public String getmBody() {
         return this.mBody;
     }
-    public Bitmap getmImage(){
-        return  this.mImage;
+
+    public Bitmap getmImage() {
+        return this.mImage;
     }
 
 }

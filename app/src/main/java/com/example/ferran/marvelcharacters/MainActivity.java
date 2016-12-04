@@ -12,13 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,17 +42,13 @@ public class MainActivity extends AppCompatActivity {
     private String marvelStrURL;
     MarvelApiConfig mApiConfig = new MarvelApiConfig();
 
-
     List<Item> listItem = new ArrayList<>();
     List<Character> listCharacter = new ArrayList<>();
 
     Character selectedChar = new Character();
-
     RecyclerView recyclerView;
-
     Bitmap imageBitmap;
     List<Bitmap> imgBitmapList = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,24 +79,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
-
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager( //cambiando el elemento permite definir si es linear layout, un grid, un staggeredgridlayout, etc...
+        recyclerView.setLayoutManager(new LinearLayoutManager(
                 this,
                 LinearLayoutManager.VERTICAL,
-                false)); //para que sea circular o no (false = no)
+                false));
 
-        MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(this, listItem,true);
-
+        MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(this, listItem, true);
         recyclerView.setAdapter(myListAdapterRecycler);
-
-
     }
-
 
     private void switchActivity() {
 
-        Toast.makeText(this,"Searching...",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Searching...", Toast.LENGTH_LONG).show();
         ConnectivityManager mConnectionManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mNetworkInfo = mConnectionManager.getActiveNetworkInfo();
 
@@ -109,10 +100,9 @@ public class MainActivity extends AppCompatActivity {
             new MyAlternativeThread().execute(marvelStrURL = mApiConfig.ComputeRequestMarvelURL(this.mHeroName));
 
         } else {
-            Log.i("TAG", "Connection unavailable");
+            Toast.makeText(this, "Connection not available", Toast.LENGTH_LONG).show();
         }
     }
-
 
     public class MyAlternativeThread extends AsyncTask<String, Void, String> {
 
@@ -125,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
 
-            Log.i("TAG", "1: The requested URL is: " + strings[0]);
-
             try {
 
                 URL myUrl = new URL(strings[0]);
@@ -136,42 +124,16 @@ public class MainActivity extends AppCompatActivity {
 
                 myConnection.connect();
                 int respCode = myConnection.getResponseCode();
-                Log.i("TAG", "The response is: " + respCode);
 
                 if (respCode == HttpURLConnection.HTTP_OK) {
 
 
                     InputStream myInStream = myConnection.getInputStream();
-                    Reader reader = null;
-                    reader = new InputStreamReader(myInStream, "UTF-8");
-                    //myInStream.close();
-
-                    //reader=null;
-                    char[] buffer = new char[100000];
-                    reader.read(buffer);
-
-
-                    Log.i("TAG", "The connection was: " + myConnection.getResponseMessage());
-                    Log.i("TAG", "Received: " + new String(buffer));
-
-
-                    String jsonString = new String(buffer);
-
+                    InputStreamToString iStreamToString = new InputStreamToString();
+                    String jsonString = iStreamToString.inputStreamToString(myInStream);
                     List<String> heroArray = new ArrayList<String>();
-
                     Character hero = new Character(jsonString);
-
                     hero.computeCharacterObject();
-
-                    String des = hero.getDescription();
-
-                    Log.i("TAG", des);
-
-                    String name = hero.getName();
-                    Log.i("TAG", name);
-
-                    Log.i("TAG", "The array of the characters is: " + String.valueOf(hero.getCharacterArray()));
-
                     listCharacter.clear();
                     listItem.clear();
                     listCharacter.add(hero);
@@ -179,17 +141,13 @@ public class MainActivity extends AppCompatActivity {
                     imgBitmapList.clear();
 
                     int cnt = 0;
-
                     for (String counter : listCharacter.get(0).getImageArray()) {
                         myUrl = new URL(listCharacter.get(0).getImageArray().get(cnt));
-                        Log.i("TAG", "Image URL: " + myUrl);
                         myConnection = (HttpURLConnection) myUrl.openConnection();
                         myConnection.setRequestMethod("GET");
                         myConnection.setDoInput(true);
-
                         myConnection.connect();
                         respCode = myConnection.getResponseCode();
-                        Log.i("TAG", "The response is: " + respCode);
 
                         if (respCode == HttpURLConnection.HTTP_OK) {
                             myInStream = myConnection.getInputStream();
@@ -197,12 +155,11 @@ public class MainActivity extends AppCompatActivity {
                             imgBitmapList.add(BitmapFactory.decodeStream(myInStream));
                             myInStream.close();
 
-                        } else
-                            Log.i("TAG", "Connection not available");
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Connection not available", Toast.LENGTH_LONG).show();
+                        }
                         cnt++;
                     }
-
-
                 }
 
             } catch (MalformedURLException e) {
@@ -235,11 +192,8 @@ public class MainActivity extends AppCompatActivity {
                     newItemList.add(hero);
                 }
             }
-            MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(getApplicationContext(), newItemList, selectedChar,true);
+            MyListAdapterRecycler myListAdapterRecycler = new MyListAdapterRecycler(getApplicationContext(), newItemList, selectedChar, true);
             recyclerView.setAdapter(myListAdapterRecycler);
         }
-
-
     }
-
 }

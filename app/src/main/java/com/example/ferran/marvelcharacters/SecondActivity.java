@@ -10,11 +10,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.method.MovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -36,7 +39,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
 
 
     MarvelApiConfig mApiConfig = new MarvelApiConfig();
-
     FragmentManager fm = getSupportFragmentManager();
     ComicsFragment myComicsFragment = (ComicsFragment) fm.findFragmentById(R.id.frame_layout_comics_events);
     private boolean isFragmentOne;
@@ -75,6 +77,8 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         mTitleText = (TextView) findViewById(R.id.heroe_title);
         mImageViewChar = (ImageView) findViewById(R.id.heroe_image);
         mBodyText = (TextView) findViewById(R.id.heroe_body);
+        mBodyText.setMovementMethod(new ScrollingMovementMethod() {
+        });
 
         mCharId = getIntent().getStringExtra("CHAR_ID");
         mCharName = getIntent().getStringExtra("CHAR_NAME");
@@ -84,14 +88,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         mCharDetailLink = getIntent().getStringExtra("CHAR_DETAIL_URL");
         mCharComicLink = getIntent().getStringExtra("CHAR_COMIC_URL");
 
-        Log.i("TAG", "wiki link: " + mCharWikiLink);
-        Log.i("TAG", "detail link: " + mCharDetailLink);
-
         downloadContent = DOWNLOAD_CHAR_IMAGE;
-
         isContentDownloaded = false;
         new MyAlternativeThread().execute(mCharImageURL);
-
         while (!isContentDownloaded) ;
 
         int i = 0;
@@ -101,12 +100,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         mImageViewChar.setImageBitmap(charBitmap);
-
-
         mTitleText.setText(mCharName);
         mBodyText.setText(mCharDescription);
         mImageViewChar.setImageBitmap(charBitmap);
-
 
         TabLayout.OnTabSelectedListener listener = new TabLayout.OnTabSelectedListener() {
             @Override
@@ -137,12 +133,10 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         new MyAlternativeThread().execute(mApiConfig.ComputeRequestMarvelComicURL(this.mCharId));
         while (!isContentDownloaded) ;
 
-        downloadContent= DOWNLOAD_EVENT;
+        downloadContent = DOWNLOAD_EVENT;
         isContentDownloaded = false;
         new MyAlternativeThread().execute(mApiConfig.ComputeRequestMarvelEventURL(this.mCharId));
-        while(!isContentDownloaded);
-
-
+        while (!isContentDownloaded) ;
 
         /**********************End of downloading content********************/
         final Button WikiBtn = (Button) findViewById(R.id.wiki_btn);
@@ -155,7 +149,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         FragmentManager fragManager = this.getSupportFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
         make_transaction(true);
-
     }
 
     public void make_transaction(boolean comicSelected) {
@@ -170,7 +163,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         fragTransaction.commit();
     }
 
-
     @Override
     public Comics setComicList() {
         return this.mComicsObject;
@@ -180,6 +172,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
     public Events setEventList() {
         return this.mEventObject;
     }
+
     @Override
     public void onClick(View view) {
         Intent browserIntent = new Intent();
@@ -202,19 +195,14 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-
-
     public class MyAlternativeThread extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
 
-            Log.i("TAG", "1: The requested URL is: " + strings[0]);
-
             try {
 
                 URL myUrl = new URL(strings[0]);
-                Log.i("TAG", "URL: " + myUrl);
 
                 HttpURLConnection myConnection = (HttpURLConnection) myUrl.openConnection();
                 myConnection.setRequestMethod("GET");
@@ -222,10 +210,8 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
 
                 myConnection.connect();
                 int respCode = myConnection.getResponseCode();
-                Log.i("TAG", "The response is: " + respCode);
 
                 if (respCode == HttpURLConnection.HTTP_OK) {
-
 
                     InputStream myInStream = myConnection.getInputStream();
 
@@ -235,16 +221,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                         myInStream.close();
                         isContentDownloaded = true;
                     } else if (downloadContent == DOWNLOAD_COMIC) {
-                        Reader reader = null;
-                        reader = new InputStreamReader(myInStream, "UTF-8");
 
-                        char[] buffer = new char[100000];
-                        reader.read(buffer);
-
-                        Log.i("TAG", "The connection was: " + myConnection.getResponseMessage());
-                        Log.i("TAG", "Received: " + new String(buffer));
-
-                        String jsonString = new String(buffer);
+                        InputStreamToString iStreamToString = new InputStreamToString();
+                        String jsonString = iStreamToString.inputStreamToString(myInStream);
                         List<String> heroArray = new ArrayList<String>();
                         Comics heroComics = new Comics(jsonString);
                         heroComics.computeCharacterComicInfo();
@@ -253,14 +232,12 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                         int cnt = 0;
                         for (String counter : mComicsObject.getImageUrlArray()) {
                             myUrl = new URL(mComicsObject.getImageUrlArray().get(cnt));
-                            Log.i("TAG", "Image URL: " + myUrl);
                             myConnection = (HttpURLConnection) myUrl.openConnection();
                             myConnection.setRequestMethod("GET");
                             myConnection.setDoInput(true);
 
                             myConnection.connect();
                             respCode = myConnection.getResponseCode();
-                            Log.i("TAG", "The response is: " + respCode);
 
                             if (respCode == HttpURLConnection.HTTP_OK) {
                                 myInStream = myConnection.getInputStream();
@@ -268,8 +245,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                                 mComicsObject.addImageBitmapArray(BitmapFactory.decodeStream(myInStream));
                                 myInStream.close();
 
-                            } else
-                                Log.i("TAG", "Connection not available");
+                            } else {
+
+                            }
                             cnt++;
                         }
                         isContentDownloaded = true;
@@ -277,14 +255,8 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                         Reader reader = null;
                         reader = new InputStreamReader(myInStream, "UTF-8");
 
-                        char[] buffer = new char[100000];
-                        reader.read(buffer);
-
-                        Log.i("TAG", "The connection was: " + myConnection.getResponseMessage());
-                        Log.i("TAG", "Received: " + new String(buffer));
-
-                        String jsonString = new String(buffer);
-                        List<String> heroArray = new ArrayList<String>();
+                        InputStreamToString iStreamToString = new InputStreamToString();
+                        String jsonString = iStreamToString.inputStreamToString(myInStream);
                         Events heroComics = new Events(jsonString);
                         heroComics.computeCharacterEventInfo();
                         mEventObject = heroComics;
@@ -292,35 +264,28 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                         int cnt = 0;
                         for (String counter : mEventObject.getImageUrlArray()) {
                             myUrl = new URL(mEventObject.getImageUrlArray().get(cnt));
-                            Log.i("TAG", "Image URL: " + myUrl);
                             myConnection = (HttpURLConnection) myUrl.openConnection();
                             myConnection.setRequestMethod("GET");
                             myConnection.setDoInput(true);
 
                             myConnection.connect();
                             respCode = myConnection.getResponseCode();
-                            Log.i("TAG", "The response is: " + respCode);
 
                             if (respCode == HttpURLConnection.HTTP_OK) {
                                 myInStream = myConnection.getInputStream();
                                 mEventObject.addImageBitmapArray(BitmapFactory.decodeStream(myInStream));
                                 myInStream.close();
 
-                            } else
-                                Log.i("TAG", "Connection not available");
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Connection not available", Toast.LENGTH_LONG).show();
+                            }
                             cnt++;
                         }
                         isContentDownloaded = true;
-
-                    }else {
-
-
+                    } else {
                         isContentDownloaded = true;
                     }
-
                 }
-
-
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -334,10 +299,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
-
         }
-
-
     }
 }
