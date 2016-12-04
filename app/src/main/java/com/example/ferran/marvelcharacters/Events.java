@@ -25,7 +25,7 @@ public class Events {
     private static final String IMAGE_PATH = "path";
     private static final String IMAGE_EXTENSION = "extension";
 
-    private int total_events;
+    private int total_events,eventCount;
     private String jsonStringObject, name, description;
 
     private List<String> eventArray = new ArrayList<String>();
@@ -46,7 +46,7 @@ public class Events {
         JSONObject jsonReader = (JSONObject) new JSONObject(this.jsonStringObject);
         JSONObject jsonReaderData = jsonReader.getJSONObject(EVENT_DATA);
         JSONArray characterResults = jsonReaderData.getJSONArray(EVENT_RESULTS);
-        int eventCount = (int) jsonReaderData.get(EVENT_TOTAL_NAMES);
+        eventCount = (int) jsonReaderData.get(EVENT_TOTAL_NAMES);
         if (eventCount > 0) {
             JSONObject returnedData = characterResults.getJSONObject(0);
 
@@ -90,5 +90,9 @@ public class Events {
 
     public void addImageBitmapArray(Bitmap imageBitmapArray) {
         this.imageBitmapArray.add(imageBitmapArray);
+    }
+
+    public int getEventNumber(){
+        return eventCount;
     }
 }

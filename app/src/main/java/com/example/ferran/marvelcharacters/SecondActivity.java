@@ -80,6 +80,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         mBodyText.setMovementMethod(new ScrollingMovementMethod() {
         });
 
+
         mCharId = getIntent().getStringExtra("CHAR_ID");
         mCharName = getIntent().getStringExtra("CHAR_NAME");
         mCharDescription = getIntent().getStringExtra("CHAR_DESCRIPTION");
@@ -107,7 +108,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         TabLayout.OnTabSelectedListener listener = new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getText().equals("Events"))
+                if (eventsTab.isSelected())
                     make_transaction(false);
                 else
                     make_transaction(true);
@@ -138,6 +139,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         new MyAlternativeThread().execute(mApiConfig.ComputeRequestMarvelEventURL(this.mCharId));
         while (!isContentDownloaded) ;
 
+
         /**********************End of downloading content********************/
         final Button WikiBtn = (Button) findViewById(R.id.wiki_btn);
         WikiBtn.setOnClickListener(this);
@@ -149,6 +151,9 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         FragmentManager fragManager = this.getSupportFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
         make_transaction(true);
+
+        comicsTab.setText("("+String.valueOf(mComicsObject.getComicArray().size())+") Comics");
+        eventsTab.setText("("+String.valueOf(mEventObject.getEventNumber())+") Events");
     }
 
     public void make_transaction(boolean comicSelected) {
