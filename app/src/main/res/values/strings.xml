@@ -6,5 +6,12 @@
     <string name="txt_view_title_text">A title</string>
     <string name="txt_view_body_text">A body</string>
     <string name="txt_view_list_header_text">Operating Systems</string>
+    <string name="detalle_btn_txt">Detalle</string>
+    <string name="wiki_btn_txt">Wiki</string>
+    <string name="comics_btn_txt">Comics</string>
+    <string name="links_txt">Links</string>
+    <string name="recursos_txt">Recursos</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

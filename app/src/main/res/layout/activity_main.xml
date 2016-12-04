@@ -12,13 +12,28 @@
         android:textColor="@android:color/black"
         android:textStyle="italic"
         android:textSize="20sp"
-        android:id="@+id/txt_view_busca_heroe"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/nombre_buscar"
-        android:id="@+id/edt_text_nombre_buscar"
-        />
+        android:id="@+id/txt_view_buscar"/>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/nombre_buscar"
+            android:id="@+id/edt_text_buscar"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Search"
+            android:id="@+id/srch_btn"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

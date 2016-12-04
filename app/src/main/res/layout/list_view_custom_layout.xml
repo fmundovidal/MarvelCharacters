@@ -8,30 +8,47 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="60dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:id="@+id/image_view_custom_row_layout"
-            android:src="@mipmap/ic_launcher" />
-        <TextView
+            android:src="@mipmap/ic_launcher"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+        
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/txt_view_title_text"
-            android:id="@+id/text_view_tiltle"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="10dp" />
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/txt_view_title_text"
+                android:id="@+id/text_view_tiltle"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_view_body_text"
+                android:id="@+id/text_view_body"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/holo_blue_dark"/>
+        </LinearLayout>
+
+
+
+
+
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/txt_view_body_text"
-        android:id="@+id/text_view_body"
-        android:layout_marginLeft="10dp" />
 
 </LinearLayout>
