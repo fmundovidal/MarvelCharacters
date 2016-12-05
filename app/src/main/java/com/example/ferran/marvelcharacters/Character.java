@@ -135,7 +135,6 @@ public class Character {
         }
     }
 
-
     //Getters
     public String getDescription() {
         return this.description;

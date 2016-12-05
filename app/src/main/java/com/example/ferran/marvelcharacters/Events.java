@@ -50,7 +50,7 @@ public class Events {
         if (eventCount > 0) {
             JSONObject returnedData = characterResults.getJSONObject(0);
 
-            for (int i = 0; i < (int) jsonReaderData.get(EVENT_TOTAL_NAMES)/*characterResults.length()*/; i++) {
+            for (int i = 0; i < (int) jsonReaderData.get(EVENT_TOTAL_NAMES); i++) {
                 returnedData = characterResults.getJSONObject(i);
                 String eventName = returnedData.getString(EVENT_TITLE);
                 this.eventArray.add(eventName);

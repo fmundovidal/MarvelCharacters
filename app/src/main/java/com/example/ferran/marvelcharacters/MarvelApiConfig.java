@@ -7,7 +7,6 @@ package com.example.ferran.marvelcharacters;
 
 public class MarvelApiConfig {
     public static final String PUBLIC_APIKEY = "525f93ccf6c344fddcaebd0d31e52a00";
-    private static final String PRIVATE_APIKEY = "5cc3a083f13e96ff2a695521c1e2a2093a9c1afd";
     public static final String MD5CODE = "a58fcbaed1090f407684847766406d8e";
     public static final String TOTAL_RESOURCES = "limit=30";
     public static final String TOTAL_EVENT_RESOURCES = "limit=20";

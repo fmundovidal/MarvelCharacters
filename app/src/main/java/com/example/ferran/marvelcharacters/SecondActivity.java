@@ -67,7 +67,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-
         this.tabs = (TabLayout) findViewById(R.id.tabs);
         this.comicsTab = this.tabs.newTab().setText("Comics");
         this.eventsTab = this.tabs.newTab().setText("Events");
@@ -79,7 +78,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         mBodyText = (TextView) findViewById(R.id.heroe_body);
         mBodyText.setMovementMethod(new ScrollingMovementMethod() {
         });
-
 
         mCharId = getIntent().getStringExtra("CHAR_ID");
         mCharName = getIntent().getStringExtra("CHAR_NAME");
@@ -126,7 +124,6 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         };
         tabs.addOnTabSelectedListener(listener);
 
-
         /***********************Downloading the content********************/
         Character heroInfo = new Character();
         downloadContent = DOWNLOAD_COMIC;
@@ -138,9 +135,8 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         isContentDownloaded = false;
         new MyAlternativeThread().execute(mApiConfig.ComputeRequestMarvelEventURL(this.mCharId));
         while (!isContentDownloaded) ;
-
-
         /**********************End of downloading content********************/
+
         final Button WikiBtn = (Button) findViewById(R.id.wiki_btn);
         WikiBtn.setOnClickListener(this);
         final Button DetailBtn = (Button) findViewById(R.id.detalle_btn);
@@ -152,8 +148,8 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
         make_transaction(true);
 
-        comicsTab.setText("("+String.valueOf(mComicsObject.getComicArray().size())+") Comics");
-        eventsTab.setText("("+String.valueOf(mEventObject.getEventNumber())+") Events");
+        comicsTab.setText("(" + String.valueOf(mComicsObject.getComicArray().size()) + ") Comics");
+        eventsTab.setText("(" + String.valueOf(mEventObject.getEventNumber()) + ") Events");
     }
 
     public void make_transaction(boolean comicSelected) {

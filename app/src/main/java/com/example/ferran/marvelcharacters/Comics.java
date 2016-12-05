@@ -27,15 +27,12 @@ public class Comics {
     private static final String IMAGE_PATH = "path";
     private static final String COMIC_TITLE = "title";
 
-
     private int total_comics;
     private String jsonStringObject, name, description;
 
     private List<String> comicArray = new ArrayList<String>();
     private List<String> descriptionArray = new ArrayList<String>();
     private List<String> imageUrlArray = new ArrayList<String>();
-
-
     private List<Bitmap> imageBitmapArray = new ArrayList<Bitmap>();
     private List<String> idArray = new ArrayList<String>();
 
